@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Puzzle Alert</string>
+    <string name="alarm_clock">Alarm Clock</string>
+    <string name="puzzle_difficulty">Puzzle Difficulty</string>
+    <string name="to_alarm_clock_activity">To Alarm Clock</string>
+    <string name="to_puzzle_difficulty_activity">To Puzzle Difficulty</string>
+</resources>
