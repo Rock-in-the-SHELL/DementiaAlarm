@@ -1,7 +1,9 @@
 package com.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -23,11 +25,17 @@ public class MainButtonFragment extends Fragment {
     // TODO: Customize parameters
     private int mColumnCount = 1;
 
+    OnClickListener _clicklistener;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
     public MainButtonFragment() {
+    }
+
+    public interface OnClickListener {
+        public void onClick(Fragment fragment);
     }
 
     // TODO: Customize parameter initialization
@@ -38,6 +46,16 @@ public class MainButtonFragment extends Fragment {
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            _clicklistener = (OnClickListener) context;
+        } catch(ClassCastException e){
+            throw new ClassCastException(getActivity().toString() + "must implement OnArticleSelectedListener.");
+        }
     }
 
     @Override
@@ -56,31 +74,21 @@ public class MainButtonFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_main_button, container, false);
 
         Button to_alarm_clock_button = view.findViewById(R.id.to_alarm_clock_fragment_button);
+        to_alarm_clock_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                _clicklistener.onClick(AlarmClockFragment.newInstance("from Main", "To AlarmClock"));
+            }
+        });
+
         Button to_puzzle_difficulty_button = view.findViewById(R.id.to_puzzle_difficulty_fragment_button);
-        Button to_play_puzzle_button = view.findViewById(R.id.to_play_puzzle_fragment_button);
-
-        to_alarm_clock_button.setOnClickListener(new ButtonClickListener());
-        to_puzzle_difficulty_button.setOnClickListener(new ButtonClickListener());
-        to_play_puzzle_button.setOnClickListener(new ButtonClickListener());
-
+        to_puzzle_difficulty_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                _clicklistener.onClick(PuzzleDifficultyFragment.newInstance("from Main", "To PuzzleDifficulty"));
+            }
+        });
         return view;
     }
 
-    // when push button
-    private class ButtonClickListener implements View.OnClickListener{
-
-        // Declare the method onClick
-        @Override
-        public void onClick(View view) {
-            FragmentManager fragmentManager = getChildFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-            switch (view.getId()){
-                case R.id.to_alarm_clock_fragment_button:
-                    fragmentTransaction.add(R.id.fragment_alarm_clock, AlarmClockFragment.newInstance("from main", "to alarm clock"));
-                    fragmentTransaction.addToBackStack(null);
-                    fragmentTransaction.commit();
-            }
-        }
-    }
 }
