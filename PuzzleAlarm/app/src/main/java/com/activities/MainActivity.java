@@ -1,22 +1,19 @@
 package com.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
 import com.example.puzzlealarm.R;
-import com.fragments.MainButtonFragment;
+import com.fragments.AlarmClockFragment;
+import com.fragments.PuzzleDifficultyFragment;
 
-public class MainActivity extends AppCompatActivity implements MainButtonFragment.OnClickListener {
+public class MainActivity extends AppCompatActivity {
 
     private ListView listview;
 
@@ -26,11 +23,37 @@ public class MainActivity extends AppCompatActivity implements MainButtonFragmen
         setContentView(R.layout.activity_main);
     }
 
+    private class ButtonClickListener implements View.OnClickListener{
+        // tap the button
+
+        @Override
+        public void onClick(View view) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.addToBackStack(null);
+            switch(view.getId()){
+                case R.id.to_alarm_clock_fragment_button:
+                    fragmentTransaction.replace(R.id.container,AlarmClockFragment.class,null)
+                            .commit();
+                    break;
+
+                case R.id.to_puzzle_difficulty_fragment_button:
+                    fragmentTransaction.replace(R.id.container, PuzzleDifficultyFragment.class,null)
+                            .commit();
+                    break;
+            }
+        }
+    }
+
+
     @Override
-    public void onClick(Fragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.container, fragment);
-        fragmentTransaction.commit();
+    protected void onStart() {
+        super.onStart();
+        Button to_alarm_clock_button = this.findViewById(R.id.to_alarm_clock_fragment_button);
+        to_alarm_clock_button.setOnClickListener(new ButtonClickListener());
+
+        Button to_puzzle_difficulty_button = this.findViewById(R.id.to_puzzle_difficulty_fragment_button);
+        to_puzzle_difficulty_button.setOnClickListener(new ButtonClickListener());
+
     }
 }
