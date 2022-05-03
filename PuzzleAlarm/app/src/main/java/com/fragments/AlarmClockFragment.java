@@ -1,5 +1,8 @@
 package com.fragments;
 
+import android.app.AlarmManager;
+import android.app.TimePickerDialog;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,20 +10,26 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
+import com.activities.MainActivity;
 import com.example.puzzlealarm.R;
+
+import java.util.Calendar;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link AlarmClockFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AlarmClockFragment extends Fragment {
+public class AlarmClockFragment extends Fragment implements TimePickerDialog.OnTimeSetListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final int currentApiVersion = Build.VERSION.SDK_INT;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -62,5 +71,49 @@ public class AlarmClockFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_alarm_clock, container, false);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        TimePicker timePicker = new TimePicker(getContext());
+        int hour;
+        int minute;
+        if (currentApiVersion > Build.VERSION_CODES.LOLLIPOP_MR1){
+            hour = timePicker.getHour();
+            minute = timePicker.getMinute();
+        }else{
+            hour = timePicker.getCurrentHour();
+            minute = timePicker.getCurrentMinute();
+        }
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+    }
+
+
+    @Override
+    public void onTimeSet(TimePicker timePicker, int i, int i1) {
+        Toast.makeText(getContext(),"Hi", Toast.LENGTH_LONG).show();
+    }
+
+    public void setAlarmClock(){
+        TimePicker timePicker = new TimePicker(getContext());
+        int hour;
+        int minute;
+        if (currentApiVersion > Build.VERSION_CODES.LOLLIPOP_MR1){
+            hour = timePicker.getHour();
+            minute = timePicker.getMinute();
+        }else{
+            hour = timePicker.getCurrentHour();
+            minute = timePicker.getCurrentMinute();
+        }
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
     }
 }

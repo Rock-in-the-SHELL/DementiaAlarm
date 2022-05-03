@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.activities.MainActivity">
+    tools:context="com.activities.AlarmSetActivity">
 
     <FrameLayout
         android:id="@+id/container"
@@ -20,33 +20,23 @@
             tools:layout_editor_absoluteX="0dp">
 
             <Button
-                android:id="@+id/to_alarm_clock_fragment_button"
+                android:id="@+id/save"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="@color/teal"
                 android:textColor="@color/aliceblue"
-                android:text="@string/to_alarm_clock_fragment"
+                android:text="@string/save"
                 android:textSize="@dimen/button_text_size"/>
 
             <Button
-                android:id="@+id/to_puzzle_difficulty_fragment_button"
+                android:id="@+id/cancel"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:backgroundTint="@color/teal"
                 android:textColor="@color/aliceblue"
-                android:text="@string/to_puzzle_difficulty_fragment"
-                android:textSize="@dimen/button_text_size"/>
-
-            <Button
-                android:id="@+id/to_play_puzzle_fragment_button"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:backgroundTint="@color/teal"
-                android:textColor="@color/aliceblue"
-                android:text="@string/to_play_puzzle_fragment"
+                android:text="@string/cancel"
                 android:textSize="@dimen/button_text_size"/>
 
         </LinearLayout>
