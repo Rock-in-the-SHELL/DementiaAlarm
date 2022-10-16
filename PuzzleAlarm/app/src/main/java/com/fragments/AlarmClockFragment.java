@@ -1,19 +1,23 @@
 package com.fragments;
 
 import android.app.AlarmManager;
-import android.app.TimePickerDialog;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.activities.MainActivity;
+import com.receivers.AlarmBroadcastReceiver;
 import com.example.puzzlealarm.R;
 
 import java.util.Calendar;
@@ -23,7 +27,7 @@ import java.util.Calendar;
  * Use the {@link AlarmClockFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AlarmClockFragment extends Fragment implements TimePickerDialog.OnTimeSetListener {
+public class AlarmClockFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -34,6 +38,9 @@ public class AlarmClockFragment extends Fragment implements TimePickerDialog.OnT
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private TimePicker timePicker;
+    private AlarmClockFragmentListener alarmClockFragmentListener;
+
 
     public AlarmClockFragment() {
         // Required empty public constructor
@@ -57,6 +64,18 @@ public class AlarmClockFragment extends Fragment implements TimePickerDialog.OnT
         return fragment;
     }
 
+    public interface AlarmClockFragmentListener {
+        void onCLickSave(String value);
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof AlarmClockFragmentListener){
+            alarmClockFragmentListener = (AlarmClockFragmentListener) context;
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,50 +89,50 @@ public class AlarmClockFragment extends Fragment implements TimePickerDialog.OnT
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_alarm_clock, container, false);
+        View view = inflater.inflate(R.layout.fragment_alarm_clock, container, false);
+
+        // Get TimePicker View
+        timePicker = (TimePicker) view.findViewById(R.id.timepicker);
+
+        return view;
+//        return inflater.inflate(R.layout.fragment_alarm_clock, container, false);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        TimePicker timePicker = new TimePicker(getContext());
-        int hour;
-        int minute;
-        if (currentApiVersion > Build.VERSION_CODES.LOLLIPOP_MR1){
-            hour = timePicker.getHour();
-            minute = timePicker.getMinute();
-        }else{
-            hour = timePicker.getCurrentHour();
-            minute = timePicker.getCurrentMinute();
-        }
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, hour);
-        calendar.set(Calendar.MINUTE, minute);
+        Button save_button = (Button) getActivity().findViewById(R.id.save);
+        save_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int hour;
+                int minute;
+                if (currentApiVersion > Build.VERSION_CODES.LOLLIPOP_MR1){
+                    hour = timePicker.getHour();
+                    minute = timePicker.getMinute();
+                }else{
+                    hour = timePicker.getCurrentHour();
+                    minute = timePicker.getCurrentMinute();
+                }
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(System.currentTimeMillis());
+                calendar.set(Calendar.HOUR_OF_DAY, hour);
+                calendar.set(Calendar.MINUTE, minute);
+
+                Toast.makeText(getContext(),"Set Timer", Toast.LENGTH_LONG).show();
+
+                AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+                Intent intent = new Intent(getContext(), AlarmBroadcastReceiver.class);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, intent, 0);
+                alarmManager.set(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
+
+                Toast.makeText(getContext(), "AlarmSet", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
 
-    @Override
-    public void onTimeSet(TimePicker timePicker, int i, int i1) {
-        Toast.makeText(getContext(),"Hi", Toast.LENGTH_LONG).show();
-    }
 
-    public void setAlarmClock(){
-        TimePicker timePicker = new TimePicker(getContext());
-        int hour;
-        int minute;
-        if (currentApiVersion > Build.VERSION_CODES.LOLLIPOP_MR1){
-            hour = timePicker.getHour();
-            minute = timePicker.getMinute();
-        }else{
-            hour = timePicker.getCurrentHour();
-            minute = timePicker.getCurrentMinute();
-        }
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, hour);
-        calendar.set(Calendar.MINUTE, minute);
-    }
 }
