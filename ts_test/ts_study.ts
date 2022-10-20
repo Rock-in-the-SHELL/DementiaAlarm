@@ -4,3 +4,10 @@ const main = () => {
 };
 
 main();
+
+let obj: {
+  readonly foo: number;
+};
+
+obj = {foo: 1};
+obj = {foo: 2};
